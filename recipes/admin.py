@@ -3,4 +3,4 @@ from .models import Recipe
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'date')
+    list_display = ('title', 'author', 'modified', 'created')
