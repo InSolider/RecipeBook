@@ -127,10 +127,27 @@
                     </tbody>
                 </table>
             </div>
+            {% if user.is_authenticated %}
+                <div>
+                    <form action="{% url 'add_comment' recipe.id %}" method="POST">
+                        {% csrf_token %}
+                        <textarea class="comment" name="content">Залиште свій відгук тут!</textarea>
+                        <br>
+                        <input type="submit">
+                    </form>
+                </div>
+            {% else %}
+                <p> Щоб залишити відгук <a href="/signin">увійдіть або зареєструйтесь на сайті</a>! </p>
+            {% endif %}
+            <div>
+                {% for comment in recipe.comment_set.all reversed %}
+                    <p>
+                        <h4>{{ comment.сommented_by }}</h4>
+                        {{ comment.content }}
+                    </p>
+                {% endfor %}
+            </div>
         </div>
-    
-
-
     </div>
     <!-- Recipe section ends -->
 

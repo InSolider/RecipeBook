@@ -8,6 +8,13 @@ body {
   overflow-x: hidden;
 }
 
+.comment {
+  width: 40%;
+  height: 100px;
+  padding: 10px;
+  background-color: #d0e2bc;
+}
+
 /* Header section starts */
 .hero_area {
   position: relative;

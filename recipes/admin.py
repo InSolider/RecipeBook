@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Recipe, Ingredient, RecipeIngredient
+from .models import Recipe, Ingredient, RecipeIngredient, Comment
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
@@ -13,5 +13,9 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
-    readonly_fields = ['total_worth']
-    list_display = ['title', 'total_worth', 'author', 'modified', 'created']
+    list_display = ['title', 'author', 'modified', 'created']
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['recipe', 'сommented_by', 'created_on', 'content']
+    readonly_fields = ['recipe', 'сommented_by']

@@ -4,7 +4,7 @@ from django.template.defaultfilters import date as dateconvert
 from django_resized import ResizedImageField
 from translitua import translit
 from django_currentuser.db.models import CurrentUserField
-from django.db.models import Sum
+from django.conf import settings
 
 # Database model for recipes
 
@@ -19,18 +19,14 @@ class Recipe(models.Model):
     description = models.TextField('Розгорнутий рецепт')
     cooking_time = models.CharField('Час приготування', max_length=32)
     author = models.CharField('Автор', max_length=64)
-    total_worth = models.DecimalField('Загальна вартість', max_digits=6, decimal_places=2, null=True, blank=True)
     created = models.DateTimeField('Дата публікації', auto_now_add=True)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
 
     def __str__(self):
         return f'{self.title}'
-    
-    def save(self, *args, **kwargs):
-        self.total_worth = RecipeIngredient.objects.aggregate(Sum('worth'))['worth__sum']
-        super().save(*args, **kwargs)
 
     class Meta:
+        db_table = 'Recipes'
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепти'
 
@@ -57,6 +53,7 @@ class Ingredient(models.Model):
         return f'{self.name}'
     
     class Meta:
+        db_table = 'Ingredients'
         verbose_name = 'Інгрідієнт'
         verbose_name_plural = 'Інгрідієнти'
 
@@ -88,5 +85,22 @@ class RecipeIngredient(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
+        db_table = 'IngredientsInRecipes'
         verbose_name = 'Інгрідієнт'
         verbose_name_plural = 'Інгрідієнти для страви'
+
+# Database model for comments
+
+class Comment(models.Model):
+    recipe = models.ForeignKey(Recipe, verbose_name='Коментар до рецепту', on_delete=models.CASCADE)
+    сommented_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Користувач', on_delete=models.CASCADE)
+    created_on = models.DateTimeField('Дата публікації', auto_now_add=True)
+    content = models.TextField('Вміст', max_length=2000)
+
+    def __str__(self):
+        return f'Коментар залишений користувачем "{self.сommented_by}" до рецепту "{self.recipe}" в {localtime(self.created_on).strftime("%H:%M:%S %d.%m.%Y")}'
+    
+    class Meta:
+        db_table = 'Comments'
+        verbose_name = 'Коментар'
+        verbose_name_plural = 'Коментарі'
