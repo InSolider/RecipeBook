@@ -1,25 +1,25 @@
 from django.db import models
+from django.conf import settings
 from django.utils.timezone import localtime
-from django.template.defaultfilters import date as dateconvert
+from django.template.defaultfilters import date
 from django_resized import ResizedImageField
 from translitua import translit
-from django_currentuser.db.models import CurrentUserField
-from django.conf import settings
 
 # Database model for recipes
 
 class Recipe(models.Model):
     
     def get_preview_path(self, filename):
-        path = 'images/' + dateconvert(localtime(self.created), 'ymd-Hi-') + translit(self.title).replace(' ', '-') + '/cover.webp'
+        path = 'images/' + date(localtime(self.created), 'ymd-Hi-') + translit(self.title).replace(' ', '-') + '/cover.webp'
         return path
     
     preview = ResizedImageField(verbose_name='Фото-прев\'ю', upload_to=get_preview_path, size=[1920, 1080], crop=['middle', 'center'], quality=100, force_format='WEBP')
     title = models.CharField('Назва', max_length=128)
     description = models.TextField('Розгорнутий рецепт')
     cooking_time = models.CharField('Час приготування', max_length=32)
-    author = models.CharField('Автор', max_length=64)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор', related_name='recipe_created_by', null=True, blank=True, on_delete=models.SET_NULL)
     created = models.DateTimeField('Дата публікації', auto_now_add=True)
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', related_name='recipe_modified_by', null=True, blank=True, on_delete=models.SET_NULL)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
 
     def __str__(self):
@@ -47,7 +47,7 @@ class Ingredient(models.Model):
     )
     price = models.DecimalField('Ціна', max_digits=6, decimal_places=2)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
-    modified_by = CurrentUserField(verbose_name='Відредагував', on_update=True)
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.name}'
@@ -61,8 +61,8 @@ class Ingredient(models.Model):
 
 class RecipeIngredient(models.Model):
     
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.SET_NULL, null=True, verbose_name='Інгрідієнт')
-    recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, verbose_name='Інгрідієнт')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     quantity = models.DecimalField('Кількість (кг./л./шт.)', max_digits=5, decimal_places=3)
     worth = models.DecimalField('Вартість', max_digits=6, decimal_places=2, null=True, blank=True)
 
@@ -92,6 +92,7 @@ class RecipeIngredient(models.Model):
 # Database model for comments
 
 class Comment(models.Model):
+
     recipe = models.ForeignKey(Recipe, verbose_name='Коментар до рецепту', on_delete=models.CASCADE)
     сommented_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Користувач', on_delete=models.CASCADE)
     created_on = models.DateTimeField('Дата публікації', auto_now_add=True)

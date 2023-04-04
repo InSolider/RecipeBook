@@ -3,8 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import django_currentuser.db.models.fields
-import django_currentuser.middleware
 import django_resized.forms
 import recipes.models
 
@@ -27,7 +25,6 @@ class Migration(migrations.Migration):
                 ('unit', models.CharField(choices=[('kg', 'кг.'), ('l', 'л.'), ('p', 'шт.')], default='kg', max_length=2, verbose_name='Одиниця вимірювання')),
                 ('price', models.DecimalField(decimal_places=2, max_digits=6, verbose_name='Ціна')),
                 ('modified', models.DateTimeField(auto_now=True, verbose_name='Дата редагування')),
-                ('modified_by', django_currentuser.db.models.fields.CurrentUserField(default=django_currentuser.middleware.get_current_authenticated_user, null=True, on_delete=django.db.models.deletion.CASCADE, on_update=True, to=settings.AUTH_USER_MODEL, verbose_name='Відредагував')),
             ],
             options={
                 'verbose_name': 'Інгрідієнт',
