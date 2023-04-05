@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View
 from .models import Recipe
 from .forms import CommentForm
@@ -10,7 +10,7 @@ class RecipeView(View):
         recipes = Recipe.objects.all()
         return render(request, 'recipes/index.html', {'recipes_list': recipes})
 
-# Displaying the specific recipe page
+# Display the specific recipe page
 
 class RecipeDetail(View):
     def get(self, request, pk):
@@ -27,4 +27,15 @@ class AddComment(View):
             form.recipe_id = pk
             form.сommented_by = request.user
             form.save()
+        return redirect(f'/{pk}')
+
+# Like recipe on the recipe page
+
+class LikeRecipe(View):
+    def post(self, request, pk):
+        recipe = get_object_or_404(Recipe, id=request.POST.get('recipe_id'))
+        if recipe.likes.filter(id=request.user.id).exists():
+            recipe.likes.remove(request.user)
+        else:
+            recipe.likes.add(request.user)
         return redirect(f'/{pk}')

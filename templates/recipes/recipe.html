@@ -89,6 +89,23 @@
             <p> {{ recipe.description }} </p>
             <p> {{ recipe.cooking_time }} </p>
             <p> Автор: {{ recipe.created_by }} </p>
+
+            {% if user.is_authenticated %}
+                <div>
+                    <form action="{% url 'like_recipe' recipe.pk %}" method="POST">
+                        {% csrf_token %}
+                        {% if user in recipe.likes.all %}
+                            <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-danger btn-sm">Видалити з уподобань</button>
+                        {% else %}
+                            <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary btn-sm">Додати до уподобань</button>
+                        {% endif %}
+                    </form>
+                </div>
+            {% else %}
+                <p> Щоб додати цей рецепт до своїх уподобань <a href="/signin">увійдіть або зареєструйтесь на сайті</a>! </p>
+            {% endif %}
+            <p>Уподобань: {{ recipe.likes.count }}</p>
+
             <div>
                 <table class="table">
                     <thead>

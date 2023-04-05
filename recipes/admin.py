@@ -19,7 +19,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
     list_display = ['title', 'created_by', 'created', 'modified_by', 'modified']
-    readonly_fields = ['created_by', 'modified_by']
+    readonly_fields = ['created_by', 'modified_by', 'likes']
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
