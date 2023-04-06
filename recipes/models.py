@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import localtime
-from django.contrib.auth.models import User
 from django.template.defaultfilters import date
 from django_resized import ResizedImageField
 from translitua import translit
@@ -22,7 +21,7 @@ class Recipe(models.Model):
     created = models.DateTimeField('Дата публікації', auto_now_add=True)
     modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', related_name='recipe_modified_by', null=True, blank=True, on_delete=models.SET_NULL)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
-    likes = models.ManyToManyField(User, related_name='like_recipe')
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Уподобали', related_name='like_recipe')
 
     def __str__(self):
         return f'{self.title}'

@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.views import generic
+from django.urls import reverse_lazy
 from .forms import CustomRegistrationForm
+from .models import Profile
 
 def user_signin_signup(request):
     if request.POST.get('submit') == 'sign-in':
@@ -33,3 +36,9 @@ def user_signin_signup(request):
 def user_signout(request):
     logout(request)
     return redirect('home')
+
+class EditProfile(generic.UpdateView):
+    model = Profile
+    fields = ['gender', 'birth_date', 'bio']
+    template_name = 'users/edit_profile.html'
+    success_url = reverse_lazy('home')
