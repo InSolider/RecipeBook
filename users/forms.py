@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import MaxLengthValidator
 from django.contrib.auth.models import User
 from django import forms
-from django.core.validators import MaxLengthValidator
+from .models import Profile
 
 class CustomRegistrationForm(UserCreationForm):
     username = forms.CharField(required=True, label='Ім\'я користувача', validators=[MaxLengthValidator(16, message="Максимальна довжина імені користувача 16 символів.")])
@@ -26,3 +27,9 @@ class CustomRegistrationForm(UserCreationForm):
     error_messages = {
         'password_mismatch': 'Паролі не збігаються.',
     }
+
+class ProfileForm(forms.ModelForm):
+    birth_date = forms.DateField(widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}))
+    class Meta:
+        model = Profile
+        fields = ('gender', 'birth_date', 'bio')
