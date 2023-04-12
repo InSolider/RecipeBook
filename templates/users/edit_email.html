@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, shrink-to-fit=no">
 	<link rel="shortcut icon" type="images/png" href="{% static 'users/img/favicon.png' %}">
-	<title>Редагувати інформацію у профілі</title>
+	<title>Редагувати електронну пошту</title>
 
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -74,12 +74,12 @@
 			<div class="sidebar-inner">
 				<div id="sidebar-menu" class="sidebar-menu">
 					<ul>
-						<li class="active">
+						<li>
 							<a href="{% url 'edit_profile' user.id %}" class="nav-link">
 								<i class="fa-solid fa-user"></i><span>Профіль</span>
 							</a>
 						</li>
-						<li>
+						<li class="active">
 							<a href="{% url 'edit_email' user.id %}" class="nav-link">
 								<i class="fa-solid fa-envelope"></i><span>Електронна пошта</span>
 							</a>
@@ -111,13 +111,13 @@
 					</div>
 				</div>
 				<div class="box inform_css">
-					<p class="card-title title_menu">Редагувати інформацію у профілі</p>
+					<p class="card-title title_menu">Редагувати електронну пошту</p>
 					<div class="row">
 						<form method="POST">
 							{% csrf_token %}
 							<div class="col-lg-12">
 								<div class="row formtype">
-									{% for f in profile_form %}
+									{% for f in email_form %}
 									<div class="mb-0">
 										<div class="form-group">
 											<label>{{ f.label }}</label>

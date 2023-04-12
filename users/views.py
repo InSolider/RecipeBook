@@ -1,11 +1,13 @@
 from django.db import transaction
 from django.contrib import messages
+from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from .forms import CustomRegistrationForm, ProfileForm
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from .forms import CustomRegistrationForm, EditProfileForm, EditEmailForm, ChangePasswordForm
 
 def user_signin_signup(request):
     if request.POST.get('submit') == 'sign-in':
@@ -41,17 +43,58 @@ def user_signout(request):
     logout(request)
     return redirect('home')
 
-@login_required
-@transaction.atomic
-def edit_user_profile(request, pk):
-    if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+# View for editing user profile
+
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        profile_form = EditProfileForm(instance=request.user.profile)
+        return render(request, 'users/edit_profile.html', {'profile_form': profile_form})
+    
+    @transaction.atomic
+    def post(self, request, pk):
+        profile_form = EditProfileForm(request.POST, instance=request.user.profile)
         if profile_form.is_valid():
             profile_form.save()
             messages.success(request, _('Інформація у профілі успішно оновлена!'))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
-            messages.error(request, _('Помилка!'))
-    else:
-        profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'users/edit_profile.html', {'profile_form': profile_form})
+            messages.error(request, _('Введено некоректні дані!'))
+        return render(request, 'users/edit_profile.html', {'profile_form': profile_form})
+
+# View for editing user email
+
+class EditEmailView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        email_form = EditEmailForm(instance=request.user)
+        return render(request, 'users/edit_email.html', {'email_form': email_form})
+
+    @transaction.atomic
+    def post(self, request, pk):
+        email_form = EditEmailForm(request.POST, instance=request.user)
+        if email_form.is_valid():
+            email_form.save()
+            messages.success(request, _('Налаштування були успішно оновлені!'))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, _('Введено некоректні дані!'))
+        return render(request, 'users/edit_email.html', {'email_form': email_form})
+
+# View for changing user password
+
+class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    form_class = ChangePasswordForm
+    @transaction.atomic
+    def post(self, request, pk):
+        if request.method == 'POST':
+            form = ChangePasswordForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+                messages.success(request, _('Пароль успішно змінено!'))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                messages.error(request, _('Введено неправильний старий пароль або новий не відповідає вимогам!'))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            form = ChangePasswordForm(user=request.user)
+        return render(request, 'users/change_password.html', {})

@@ -1,5 +1,6 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.core.validators import MaxLengthValidator
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django import forms
 from .models import Profile
@@ -28,8 +29,34 @@ class CustomRegistrationForm(UserCreationForm):
         'password_mismatch': 'Паролі не збігаються.',
     }
 
-class ProfileForm(forms.ModelForm):
-    birth_date = forms.DateField(widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}))
+class EditProfileForm(forms.ModelForm):
+    gender_choices=[
+        ('n', 'Не скажу'),
+        ('m', 'Чоловіча'),
+        ('f', 'Жіноча'),
+    ]
+    
+    gender = forms.ChoiceField(label='Стать', choices=gender_choices, widget=forms.Select(attrs={'class': 'form-control'}))
+    birth_date = forms.DateField(label='День народження', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date', 'class': 'form-control'}))
+    bio = forms.CharField(label='Розкажіть щось про себе', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '5'}))
+
     class Meta:
         model = Profile
         fields = ('gender', 'birth_date', 'bio')
+
+class EditEmailForm(forms.ModelForm):
+    first_name = forms.CharField(label='Ім\'я', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label='Електронна пошта', widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'name@example.com'}))
+    
+    class Meta:
+        model = get_user_model()
+        fields = ('first_name', 'email')
+
+class ChangePasswordForm(PasswordChangeForm):
+    old_password = forms.CharField(label='Старий пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password1 = forms.CharField(label='Новий пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password2 = forms.CharField(label='Новий пароль ще раз', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = get_user_model()
+        fields = ('old_password', 'new_password1', 'new_password2')
