@@ -7,11 +7,11 @@
   <!-- Basic -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Помічник кухаря – Вхід</title>
+  <title>Smachno! – Вхід</title>
   <link rel="shortcut icon" href="{% static 'users/img/favicon.png' %}" type="images/png" />
 
   <!-- Font Awesome CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static 'users/css/signin.css' %}" />
@@ -24,7 +24,7 @@
       {% if form.errors %}
         {% for field in form %}
           {% for error in field.errors %}
-            <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+            <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
               <div class="toast-header">
                 <span class="tomato">
                   <i class="me-2 fa-solid fa-triangle-exclamation fa-xl" aria-hidden="true"></i>
@@ -39,7 +39,7 @@
           {% endfor %}
         {% endfor %}
         {% for error in form.non_field_errors %}
-          <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+          <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
             <div class="toast-header">
               <span class="tomato">
                 <i class="me-2 fa-solid fa-triangle-exclamation fa-xl" aria-hidden="true"></i>
@@ -54,7 +54,7 @@
         {% endfor %}
       {% elif messages %}
         {% for message in messages %}
-          <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+          <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
             <div class="toast-header">
               <span class="tomato">
                 <i class="me-2 fa-solid fa-triangle-exclamation fa-xl" aria-hidden="true"></i>
@@ -141,8 +141,8 @@
   </div>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <!-- Custom JS -->
   <script src="{% static 'users/js/signin.js' %}"></script>
 </body>

@@ -1,7 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name='Користувач', on_delete=models.CASCADE)
@@ -24,12 +22,3 @@ class Profile(models.Model):
         db_table = 'Profiles'
         verbose_name = 'Профіль'
         verbose_name_plural = 'Профілі'
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()

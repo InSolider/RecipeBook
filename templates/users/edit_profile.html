@@ -117,6 +117,14 @@
 							{% csrf_token %}
 							<div class="col-lg-12">
 								<div class="row formtype">
+									{% for f in username_form %}
+									<div class="mb-0">
+										<div class="form-group">
+											<label>{{ f.label }}</label>
+											{{ f }}
+										</div>
+									</div>
+									{% endfor %}
 									{% for f in profile_form %}
 									<div class="mb-0">
 										<div class="form-group">

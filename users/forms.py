@@ -44,10 +44,17 @@ class EditProfileForm(forms.ModelForm):
         model = Profile
         fields = ('gender', 'birth_date', 'bio')
 
+class EditUsernameForm(forms.ModelForm):
+    username = forms.CharField(label='Ім\'я користувача', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = get_user_model()
+        fields = ('username', )
+
 class EditEmailForm(forms.ModelForm):
     first_name = forms.CharField(label='Ім\'я', widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='Електронна пошта', widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'name@example.com'}))
-    
+
     class Meta:
         model = get_user_model()
         fields = ('first_name', 'email')

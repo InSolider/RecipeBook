@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from .forms import CustomRegistrationForm, EditProfileForm, EditEmailForm, ChangePasswordForm
+from .forms import CustomRegistrationForm, EditProfileForm, EditUsernameForm, EditEmailForm, ChangePasswordForm
 
 def user_signin_signup(request):
     if request.POST.get('submit') == 'sign-in':
@@ -43,33 +43,36 @@ def user_signout(request):
     logout(request)
     return redirect('home')
 
-# View for editing user profile
+# View for editing profile
 
 class EditProfileView(LoginRequiredMixin, View):
-    def get(self, request, pk):
+    def get(self, request, pk, *args, **kwargs):
+        username_form = EditUsernameForm(instance=request.user)
         profile_form = EditProfileForm(instance=request.user.profile)
-        return render(request, 'users/edit_profile.html', {'profile_form': profile_form})
+        return render(request, 'users/edit_profile.html', {'username_form': username_form, 'profile_form': profile_form})
     
     @transaction.atomic
-    def post(self, request, pk):
+    def post(self, request, pk, *args, **kwargs):
+        username_form = EditUsernameForm(request.POST, instance=request.user)
         profile_form = EditProfileForm(request.POST, instance=request.user.profile)
-        if profile_form.is_valid():
+        if username_form.is_valid() and profile_form.is_valid():
+            username_form.save()
             profile_form.save()
-            messages.success(request, _('Інформація у профілі успішно оновлена!'))
+            messages.success(request, _('Налаштування були успішно оновлені!'))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             messages.error(request, _('Введено некоректні дані!'))
-        return render(request, 'users/edit_profile.html', {'profile_form': profile_form})
+        return render(request, 'users/edit_profile.html', {'username_form': username_form, 'profile_form': profile_form})
 
-# View for editing user email
+# View for editing email
 
 class EditEmailView(LoginRequiredMixin, View):
-    def get(self, request, pk):
+    def get(self, request, pk, *args, **kwargs):
         email_form = EditEmailForm(instance=request.user)
         return render(request, 'users/edit_email.html', {'email_form': email_form})
 
     @transaction.atomic
-    def post(self, request, pk):
+    def post(self, request, pk, *args, **kwargs):
         email_form = EditEmailForm(request.POST, instance=request.user)
         if email_form.is_valid():
             email_form.save()

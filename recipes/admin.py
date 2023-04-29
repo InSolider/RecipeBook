@@ -18,8 +18,8 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
-    list_display = ['title', 'created_by', 'created', 'modified_by', 'modified']
-    readonly_fields = ['created_by', 'modified_by', 'likes']
+    list_display = ['title', 'created_by', 'created', 'modified_by', 'modified', 'total_price']
+    readonly_fields = ['total_price', 'folder_path', 'modified_by', 'created_by', 'likes']
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:

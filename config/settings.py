@@ -67,7 +67,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'custom_tags': 'custom_tags.custom_tags',
+                'recipes_tags': 'tags.recipes_tags',
             }
         },
     },

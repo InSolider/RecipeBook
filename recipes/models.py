@@ -2,18 +2,25 @@ from django.db import models
 from django.conf import settings
 from django.utils.timezone import localtime
 from django.template.defaultfilters import date
-from django_resized import ResizedImageField
 from translitua import translit
+from django_resized import ResizedImageField
 
 # Database model for recipes
 
 class Recipe(models.Model):
     
     def get_preview_path(self, filename):
-        path = 'images/' + date(localtime(self.created), 'ymd-Hi-') + translit(self.title).replace(' ', '-') + '/cover.webp'
+        path = 'images\\' + date(localtime(self.created), 'ymd-Hi-') + translit(self.title).replace(' ', '-') + '/cover.webp'
         return path
     
+    def update_total_price(self):
+        self.total_price = 0
+        for i in RecipeIngredient.objects.filter(recipe=self):
+            self.total_price += i.quantity / i.ingredient.amount * i.ingredient.price
+        self.save()
+
     preview = ResizedImageField(verbose_name='Фото-прев\'ю', upload_to=get_preview_path, size=[1920, 1080], crop=['middle', 'center'], quality=100, force_format='WEBP')
+    folder_path = models.FilePathField('Шлях до папки з фото', max_length=260, null=True, blank=True)
     title = models.CharField('Назва', max_length=128)
     description = models.TextField('Розгорнутий рецепт')
     cooking_time = models.CharField('Час приготування', max_length=32)
@@ -22,9 +29,15 @@ class Recipe(models.Model):
     modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', related_name='recipe_modified_by', null=True, blank=True, on_delete=models.SET_NULL)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Уподобали', related_name='like_recipe')
+    total_price = models.DecimalField('Вартість', max_digits=6, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return f'{self.title}'
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.folder_path = 'images\\' + date(localtime(self.created), 'ymd-Hi-') + translit(self.title).replace(' ', '-')
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'Recipes'

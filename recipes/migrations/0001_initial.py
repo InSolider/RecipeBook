@@ -36,7 +36,6 @@ class Migration(migrations.Migration):
             name='Recipe',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('preview', django_resized.forms.ResizedImageField(crop=['middle', 'center'], force_format='WEBP', keep_meta=True, quality=100, scale=None, size=[1920, 1080], upload_to=recipes.models.Recipe.get_preview_path, verbose_name="Фото-прев'ю")),
                 ('title', models.CharField(max_length=128, verbose_name='Назва')),
                 ('description', models.TextField(verbose_name='Розгорнутий рецепт')),
                 ('cooking_time', models.CharField(max_length=32, verbose_name='Час приготування')),
