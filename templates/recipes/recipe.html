@@ -4,167 +4,220 @@
 <html lang="uk">
 
 <head>
-
     <!-- Basic -->
     <meta charset="UTF-8">
-
-    <!-- Mobile Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Site Info -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{% static 'recipes/images/favicon.png' %}" type="images/png">
-    <title> Помічник кухаря </title>
+    <title>{{ recipe.title }} — Smachno!</title>
 
-    <!-- Bootstrap css -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Font Awesome css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Custom css -->
-    <link rel="stylesheet" href="{% static 'recipes/css/style.css' %}" />
-
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'recipes/css/recipe.css' %}" />
 </head>
 
-<body class="sub_page">
-
-    <!-- Header section strats -->
-    <div class="hero_area">
-        <header class="header_section">
-            <div class="container">
-                <nav class="navbar navbar-expand-lg custom_nav-container">
-                    <a class="navbar-brand" href="/">
-                        <span>
-                            Помічник кухаря
-                        </span>
-                    </a>
-                    <div class="navbar-collapse">
-                        <ul class="navbar-nav  mx-auto"></ul>
-                        <div class="user_option">
-                            {% if user.is_authenticated %}
-                            <a href="{% url 'edit_email' user.id %}" class="user_link">
-                                <i class="fa-solid fa-gear" aria-hidden="true"></i>
-                            </a>
-                            <a href="{% url 'edit_profile' user.id %}" class="user_link">
-                                <i class="fa-solid fa-user" aria-hidden="true"></i>
-                            </a>
-                            <a href="#" class="user_link">
-                                <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                            </a>
-                            {% if user.is_superuser %}
-                              <a href="/admin" class="user_link">
-                                <i class="fa-solid fa-wrench" aria-hidden="true"></i>
-                              </a>
-                            {% endif %}
-                            <a href="{% url 'signout' %}" class="signin">
-                              Вийти
-                            </a>
-                            {% else %}
-                            <a href="/signin" class="signin">
-                              Увійти
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </header>
-    </div>
-    <!-- Header section ends -->
-
-    <!-- Recipe section starts -->
-    <div class="album py-5 bg-light">
+<body>
+    <!-- Header -->
+    <header>
         <div class="container">
-            <div class="heading_container heading_center">
-                <h2> {{ recipe.title }} </h2>
-            </div>
-            <h1></h1>
-            <p> <img src="{{ recipe.preview.url }}" width="75%"  alt=""> </p>
-            <h1></h1>
-            <p> {{ recipe.description }} </p>
-            <p> {{ recipe.cooking_time }} </p>
-            <p> Автор: {{ recipe.created_by }} </p>
+            <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <span class="word">Smachno<span class="exclamation">!</span></span>
+                </a>
 
+                <!-- Toggle for open menu on mobile devices -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                </button>
+
+                <!-- Menu options on navbar -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto"></ul>
+                    <div class="user_option">
+                        {% if user.is_authenticated %}
+                        <a href="#" class="user_link">
+                            <i class="fa-solid fa-heart"></i>
+                        </a>
+                        <a href="{% url 'edit_email' user.id %}" class="user_link">
+                            <i class="fa-solid fa-gear"></i>
+                        </a>
+                        {% if user.is_superuser %}
+                        <a href="/admin" class="user_link">
+                            <i class="fa-solid fa-wrench"></i>
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'signout' %}" class="signin">
+                            Вийти
+                        </a>
+                        {% else %}
+                        <a href="{% url 'signin' %}" class="signin">
+                            Увійти
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Image preview -->
+    <section class="preview" id="preview" style="background-image: url('{{ recipe.preview.url }}');">
+        <div class="preview-text container">
+            <h2 class="preview-title">{{ recipe.title }}</h2>
+            <span class="preview-subtitle" style="padding-right: 10px; padding-left: 10px;"><i class="fa-solid fa-clock" style="padding-right: 5px;"></i>{{ recipe.cooking_time }}</span>
+            <span class="preview-subtitle" style="padding-right: 10px;"><i class="fa-solid fa-heart" style="padding-right: 5px;"></i>{{ recipe.likes.count }}</span>
+            <span class="preview-subtitle" style="padding-right: 10px;"><i class="fa-solid fa-comments" style="padding-right: 5px;"></i>{{ recipe.comment_set.count }}</span>
+        </div>
+    </section>
+
+    <!-- Recipe body -->
+    <div class="py-4 bg-light">
+        <div class="container">
             {% if user.is_authenticated %}
-                <div>
+            <section class="row">
+                <!-- Likes block -->
+                <div class="col-xs-12 col-sm-6">
                     <form action="{% url 'like_recipe' recipe.pk %}" method="POST">
                         {% csrf_token %}
                         {% if user in recipe.likes.all %}
-                            <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-danger btn-sm">Видалити з уподобань</button>
+                        <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-secondary">
+                            Видалити з уподобань<i class="fa-solid fa-heart" style="color: #ff4141; padding-left: 5px;"></i>
+                        </button>
                         {% else %}
-                            <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary btn-sm">Додати до уподобань</button>
+                        <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-secondary">
+                            Додати до уподобань<i class="fa-regular fa-heart" style="padding-left: 5px;"></i>
+                        </button>
                         {% endif %}
                     </form>
                 </div>
-            {% else %}
-                <p> Щоб додати цей рецепт до своїх уподобань <a href="/signin">увійдіть або зареєструйтесь на сайті</a>! </p>
-            {% endif %}
-            <p>Уподобань: {{ recipe.likes.count }}</p>
 
-            <div>
-                <table class="table">
-                    <thead>
-                      <tr>
+                <!-- User rate block -->
+                <div class="col-xs-12 col-sm-6">
+                    <p style="display: inline-block;">Ваша оцінка:</p>
+                    <ul class="btn btn-light list-inline rating-list">
+                        <li onclick="rate(5, '{{ recipe.id }}')">
+                            <i class="fa-solid fa-star {% if rating.rating > 4 %} checked {% endif %}" title="5"></i>
+                        </li>
+                        <li onclick="rate(4, '{{ recipe.id }}')">
+                            <i class="fa-solid fa-star {% if rating.rating > 3 %} checked {% endif %}" title="4"></i>
+                        </li>
+                        <li onclick="rate(3, '{{ recipe.id }}')">
+                            <i class="fa-solid fa-star {% if rating.rating > 2 %} checked {% endif %}" title="3"></i>
+                        </li>
+                        <li onclick="rate(2, '{{ recipe.id }}')">
+                            <i class="fa-solid fa-star {% if rating.rating > 1 %} checked {% endif %}" title="2"></i>
+                        </li>
+                        <li onclick="rate(1, '{{ recipe.id }}')">
+                            <i class="fa-solid fa-star {% if rating.rating > 0 %} checked {% endif %}" title="1"></i>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Ingredients table -->
+            <table class="table">
+                <thead>
+                    <tr>
                         <th scope="col">№</th>
                         <th scope="col">Інгрідієнт</th>
                         <th scope="col">Кількість</th>
                         <th scope="col">Вартість</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for ingredient in recipe.recipeingredient_set.all %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ ingredient.ingredient.name }}</td>
-                            <td>
-                                {% if ingredient.ingredient.unit == 'p' %}
-                                    {{ ingredient.quantity|floatformat:"0" }} шт.
-                                {% elif ingredient.ingredient.unit == 'l' %}
-                                    {% if ingredient.quantity < 1 %}
-                                        {% lesszero ingredient.quantity %} мл.
-                                    {% else %}
-                                        {{ ingredient.quantity|floatformat:"1" }} л.
-                                    {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ingredient in recipe.recipeingredient_set.all %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ ingredient.ingredient.name }}</td>
+                        <td>
+                            {% if ingredient.ingredient.unit == 'p' %}
+                                {{ ingredient.quantity|floatformat:"0" }} шт.
+                            {% elif ingredient.ingredient.unit == 'l' %}
+                                {% if ingredient.quantity < 1 %}
+                                    {% lesszero ingredient.quantity %} мл.
                                 {% else %}
-                                    {% if ingredient.quantity < 1 %}
-                                        {% lesszero ingredient.quantity %} г.
-                                    {% else %}
-                                        {{ ingredient.quantity|floatformat:"1" }} кг.
-                                    {% endif %}
+                                    {{ ingredient.quantity|floatformat:"1" }} л.
                                 {% endif %}
-                            </td>
-                            <td>{% worth ingredient.quantity ingredient.ingredient.amount ingredient.ingredient.price %} ₴</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <p>{{ recipe.total_price }}</p>
+                            {% else %}
+                                {% if ingredient.quantity < 1 %}
+                                    {% lesszero ingredient.quantity %} г.
+                                {% else %}
+                                    {{ ingredient.quantity|floatformat:"1" }} кг.
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{% worth ingredient.quantity ingredient.ingredient.amount ingredient.ingredient.price %} ₴</td>
+                    </tr>
+                    {% endfor %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong> &asymp; {{ recipe.total_price }} ₴</strong></td>
+                </tbody>
+            </table>
+            <br>
+
+            <!-- Recipe description -->
+            <div class="description">
+                {{ recipe.description|safe }}
             </div>
+
+            <!-- Recipe avg rating -->
+            <h5 class="card-title">Оцінка рецепту:
+                <span class="fa-solid fa-star {% if recipe.average_rating > 0 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.average_rating > 1 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.average_rating > 2 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.average_rating > 3 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.average_rating > 4 %} checked {% endif %}"></span>
+            </h5>
+            <hr>
+            <br>
+
+            <!-- Add new comment -->
+            <p>{{ recipe.comment_set.count }} коментарів</p>
             {% if user.is_authenticated %}
-                <div>
-                    <form action="{% url 'add_comment' recipe.id %}" method="POST">
-                        {% csrf_token %}
-                        <textarea class="comment" name="content">Залиште свій відгук тут!</textarea>
-                        <br>
-                        <input type="submit">
-                    </form>
+            <form action="{% url 'add_comment' recipe.id %}" method="POST">
+                {% csrf_token %}
+                <textarea class="form-control" name="content" placeholder="Залиште свій коментар тут!"></textarea>
+                <br>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-secondary" type="submit">Відправити</button>
                 </div>
+            </form>
             {% else %}
-                <p> Щоб залишити відгук <a href="/signin">увійдіть або зареєструйтесь на сайті</a>! </p>
+            <div class="alert alert-dark" role="alert">
+                Щоб залишити відгук <a href="{% url 'signin' %}" class="alert-link">увійдіть або зареєструйтесь</a> на сайті.
+            </div>
             {% endif %}
-            <div>
-                {% for comment in recipe.comment_set.all reversed %}
-                    <p>
-                        <h4>{{ comment.сommented_by }}</h4>
+
+            <!-- List of comments -->
+            {% for comment in recipe.comment_set.all reversed %}
+            <section class="card mt-4">
+                <div class="border p-2">
+                    <div class="row">
+                        <div class="col-md-auto">
+                            <img src="{% static 'recipes/images/no_user_img.jpeg' %}" width="50" height="50" class="rounded">
+                        </div>
+                        <div class="col-md-auto">
+                            <h2 class="text-capitalize h5 mb-0">{{ comment.сommented_by }}</h2>
+                            <p class="small text-secondary m-0 mt-1">{{ comment.created_on }}</p>
+                        </div>
+                    </div>
+                    <p class="my-2">
                         {{ comment.content }}
                     </p>
-                {% endfor %}
-            </div>
+                </div>
+            </section>
+            {% endfor %}
         </div>
     </div>
-    <!-- Recipe section ends -->
 
-    <!-- Footer section starts -->
+    <!-- Footer section -->
     <footer class="footer_section">
         <div class="container">
             <div class="row">
@@ -173,15 +226,15 @@
                         <h4> Контакти </h4>
                         <div class="contact_link_box">
                             <div>
-                                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                <i class="fa-solid fa-location-dot"></i>
                                 <span> ХНЕУ ім. С. Кузнеця </span>
                             </div>
                             <div>
-                                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                <i class="fa-solid fa-phone"></i>
                                 <span> +38 068 066 1042 </span>
                             </div>
                             <div>
-                                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                                <i class="fa-solid fa-envelope"></i>
                                 <span> kimachenko.maksym.o@hneu.net </span>
                             </div>
                         </div>
@@ -189,47 +242,42 @@
                 </div>
                 <div class="col-md-4 footer-col">
                     <div class="footer_detail">
-                        <a href="/" class="footer-logo"> Помічник кухаря </a>
-                        <p> Смачні і зрозумілі рецепти з приблизною ціною. </p>
+                        <a href="/" class="footer-logo"> <span class="word">Smachno<span class="exclamation">!</span></span> </a>
+                        <p> Смачні рецепти для Вас та Вашої родини. </p>
                         <div class="footer_social">
                             <a href="https://www.hneu.edu.ua/">
-                                <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                                <i class="fa-solid fa-graduation-cap"></i>
                             </a>
                             <a href="https://t.me/maxkimachenko">
-                                <i class="fa-brands fa-telegram" aria-hidden="true"></i>
+                                <i class="fa-brands fa-telegram"></i>
                             </a>
                             <a href="https://instagram.com/maxkimachenko">
-                                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                                <i class="fa-brands fa-instagram"></i>
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 footer-col">
-                    <h4> Про сайт: </h4>
+                    <h4> Швидкі посилання </h4>
                     <a href="#">
                         <p> Про нас </p>
                     </a>
                 </div>
             </div>
             <div class="footer-info">
-                <p> &copy; <span id="displayYear"></span> Усі права захищені </p>
+                <p>&copy; <span id="displayYear"></span></p>
             </div>
         </div>
     </footer>
-    <!-- Footer section ends -->
 
-    <!-- jQery -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <!-- jQery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- Bootstrap js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- Isotope js -->
-    <script src="https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"></script>
-
-    <!-- Custom js -->
-    <script src="{% static 'recipes/js/custom.js' %}"></script>
-
+    <!-- Custom JS -->
+    <script src="{% static 'recipes/js/recipe.js' %}"></script>
 </body>
 
 </html>

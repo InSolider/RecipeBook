@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import Avg
 from django.utils.timezone import localtime
 from django.template.defaultfilters import date
 from translitua import translit
 from django_resized import ResizedImageField
+from django_ckeditor_5.fields import CKEditor5Field
 
 # Database model for recipes
 
@@ -19,10 +21,13 @@ class Recipe(models.Model):
             self.total_price += i.quantity / i.ingredient.amount * i.ingredient.price
         self.save()
 
+    def average_rating(self) -> float:
+        return StarRating.objects.filter(recipe=self).aggregate(Avg("rating"))["rating__avg"] or 0
+
     preview = ResizedImageField(verbose_name='Фото-прев\'ю', upload_to=get_preview_path, size=[1920, 1080], crop=['middle', 'center'], quality=100, force_format='WEBP')
     folder_path = models.FilePathField('Шлях до папки з фото', max_length=260, null=True, blank=True)
     title = models.CharField('Назва', max_length=128)
-    description = models.TextField('Розгорнутий рецепт')
+    description = CKEditor5Field('Детальний рецепт', null=True, blank=True, config_name='extends')
     cooking_time = models.CharField('Час приготування', max_length=32)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор', related_name='recipe_created_by', null=True, blank=True, on_delete=models.SET_NULL)
     created = models.DateTimeField('Дата публікації', auto_now_add=True)
@@ -119,3 +124,18 @@ class Comment(models.Model):
         db_table = 'Comments'
         verbose_name = 'Коментар'
         verbose_name_plural = 'Коментарі'
+
+# Database model for stars rate
+
+class StarRating(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Користувач', on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, verbose_name='Рецепт', on_delete=models.CASCADE)
+    rating = models.IntegerField('Оцінка', default=0)
+
+    def __str__(self):
+        return f'Оцінка користувача {self.user} до рецепту "{self.recipe}"'
+    
+    class Meta:
+        db_table = 'StarRatings'
+        verbose_name = 'Оцінка'
+        verbose_name_plural = 'Оцінки'
