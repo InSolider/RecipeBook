@@ -36,30 +36,44 @@
 
                 <!-- Menu options on navbar -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto"></ul>
+                    <ul class="navbar-nav mx-auto">
+                      <li class="nav-item">
+                        <a class="btn nav-link" href="{% url 'home' %}">Головна</a>
+                      </li>
+                      <li class="nav-item">
+                        <div class="dropdown-center">
+                          <a class="btn nav-link dropdown-toggle categories-menu" data-bs-toggle="dropdown" aria-expanded="false" href="#">Категорії</a>
+                          <ul class="dropdown-menu">
+                            {% for category in categories %}
+                            <li><a class="dropdown-item" href="{% url 'category_recipes' category.slug %}">{{ category.name }}</a>
+                            </li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </li>
+                    {% if user.is_authenticated %}
+                      <li class="nav-item">
+                        <a class="btn nav-link" href="{% url 'favorites_recipes' %}">Уподобані рецепти</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="btn nav-link" href="{% url 'edit_profile' user.id %}">Налаштування</a>
+                      </li>
+                      {% if user.is_superuser %}
+                      <li class="nav-item">
+                        <a class="btn nav-link" style="color: orangered" href="/admin">Адмінка</a>
+                      </li>
+                      {% endif %}
+                      </ul>
+                      <div class="user_option">
+                        <a href="{% url 'signout' %}" class="signin">Вийти</a>
+                      </div>
+                    {% else %}
+                    </ul>
                     <div class="user_option">
-                        {% if user.is_authenticated %}
-                        <a href="#" class="user_link">
-                            <i class="fa-solid fa-heart"></i>
-                        </a>
-                        <a href="{% url 'edit_email' user.id %}" class="user_link">
-                            <i class="fa-solid fa-gear"></i>
-                        </a>
-                        {% if user.is_superuser %}
-                        <a href="/admin" class="user_link">
-                            <i class="fa-solid fa-wrench"></i>
-                        </a>
-                        {% endif %}
-                        <a href="{% url 'signout' %}" class="signin">
-                            Вийти
-                        </a>
-                        {% else %}
-                        <a href="{% url 'signin' %}" class="signin">
-                            Увійти
-                        </a>
-                        {% endif %}
+                      <a href="{% url 'signin' %}" class="signin">Увійти</a>
                     </div>
-                </div>
+                    {% endif %}
+                  </div>
             </nav>
         </div>
     </header>
@@ -67,10 +81,10 @@
     <!-- Image preview -->
     <section class="preview" id="preview" style="background-image: url('{{ recipe.preview.url }}');">
         <div class="preview-text container">
-            <h2 class="preview-title">{{ recipe.title }}</h2>
-            <span class="preview-subtitle" style="padding-right: 10px; padding-left: 10px;"><i class="fa-solid fa-clock" style="padding-right: 5px;"></i>{{ recipe.cooking_time }}</span>
-            <span class="preview-subtitle" style="padding-right: 10px;"><i class="fa-solid fa-heart" style="padding-right: 5px;"></i>{{ recipe.likes.count }}</span>
-            <span class="preview-subtitle" style="padding-right: 10px;"><i class="fa-solid fa-comments" style="padding-right: 5px;"></i>{{ recipe.comment_set.count }}</span>
+            <h2 class="preview-title" style="padding-bottom: 10px;">{{ recipe.title }}</h2>
+            <span class="preview-subtitle" style="padding-right: 10px; padding-left: 10px;" title="Час приготування"><i class="fa-solid fa-clock" style="padding-right: 5px;"></i>{{ recipe.cooking_time }}</span>
+            <span class="preview-subtitle" style="padding-right: 10px;" title="Кількість порцій"><i class="fa-solid fa-pizza-slice" style="padding-right: 5px;"></i>{{ recipe.portions }}</span>
+            <span class="preview-subtitle" style="padding-right: 10px;" title="Кількість уподобпнь"><i class="fa-solid fa-heart" style="padding-right: 5px;"></i>{{ recipe.likes.count }}</span>
         </div>
     </section>
 
@@ -81,7 +95,7 @@
             <section class="row">
                 <!-- Likes block -->
                 <div class="col-xs-12 col-sm-6">
-                    <form action="{% url 'like_recipe' recipe.pk %}" method="POST">
+                    <form action="{% url 'like_recipe' recipe.slug %}" method="POST">
                         {% csrf_token %}
                         {% if user in recipe.likes.all %}
                         <button type="submit" name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-secondary">
@@ -123,6 +137,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th scope="col"></th>
                         <th scope="col">№</th>
                         <th scope="col">Інгрідієнт</th>
                         <th scope="col">Кількість</th>
@@ -132,6 +147,7 @@
                 <tbody>
                     {% for ingredient in recipe.recipeingredient_set.all %}
                     <tr>
+                        <th scope="row"><input class="form-check-input" type="checkbox"></th>
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ ingredient.ingredient.name }}</td>
                         <td>
@@ -151,13 +167,14 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td>{% worth ingredient.quantity ingredient.ingredient.amount ingredient.ingredient.price %} ₴</td>
+                        <td class="ingr-price">{% worth ingredient.quantity ingredient.ingredient.amount ingredient.ingredient.price %} ₴</td>
                     </tr>
                     {% endfor %}
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><strong> &asymp; {{ recipe.total_price }} ₴</strong></td>
+                    <td></td>
+                    <td id="total-price" style="font-weight:bolder;"></td>
                 </tbody>
             </table>
             <br>
@@ -169,11 +186,11 @@
 
             <!-- Recipe avg rating -->
             <h5 class="card-title">Оцінка рецепту:
-                <span class="fa-solid fa-star {% if recipe.average_rating > 0 %} checked {% endif %}"></span>
-                <span class="fa-solid fa-star {% if recipe.average_rating > 1 %} checked {% endif %}"></span>
-                <span class="fa-solid fa-star {% if recipe.average_rating > 2 %} checked {% endif %}"></span>
-                <span class="fa-solid fa-star {% if recipe.average_rating > 3 %} checked {% endif %}"></span>
-                <span class="fa-solid fa-star {% if recipe.average_rating > 4 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.avg_rating > 0 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.avg_rating > 1 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.avg_rating > 2 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.avg_rating > 3 %} checked {% endif %}"></span>
+                <span class="fa-solid fa-star {% if recipe.avg_rating > 4 %} checked {% endif %}"></span>
             </h5>
             <hr>
             <br>
@@ -181,7 +198,7 @@
             <!-- Add new comment -->
             <p>{{ recipe.comment_set.count }} коментарів</p>
             {% if user.is_authenticated %}
-            <form action="{% url 'add_comment' recipe.id %}" method="POST">
+            <form action="{% url 'add_comment' recipe.slug %}" method="POST">
                 {% csrf_token %}
                 <textarea class="form-control" name="content" placeholder="Залиште свій коментар тут!"></textarea>
                 <br>
@@ -270,11 +287,11 @@
         </div>
     </footer>
 
-    <!-- jQery JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- jQery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Custom JS -->
     <script src="{% static 'recipes/js/recipe.js' %}"></script>

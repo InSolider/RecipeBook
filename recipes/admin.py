@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Recipe, Ingredient, RecipeIngredient, Comment, StarRating
+
+from .models import Recipe, Ingredient, RecipeIngredient, Category, Comment, StarRating
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
@@ -18,8 +19,9 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
-    list_display = ['title', 'created_by', 'created', 'modified_by', 'modified', 'total_price']
-    readonly_fields = ['total_price', 'folder_path', 'modified_by', 'created_by', 'likes']
+    list_display = ['title', 'created_by', 'created', 'modified_by', 'modified', 'total_price', 'avg_rating']
+    readonly_fields = ['avg_rating', 'total_price', 'folder_path', 'modified_by', 'created_by', 'likes']
+    exclude = ['slug']
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
@@ -29,10 +31,19 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['recipe', 'сommented_by', 'created_on', 'content']
+    list_display = ['recipe', 'сommented_by', 'created_on', 'short_content']
     readonly_fields = ['recipe', 'сommented_by']
+
+    def short_content(self, obj):
+        return obj.content[:64] + '...' if len(obj.content) > 64 else obj.content
+    short_content.short_description = 'Коментар'
 
 @admin.register(StarRating)
 class StarRateAdmin(admin.ModelAdmin):
     list_display = ['recipe', 'user', 'rating']
     readonly_fields = ['recipe', 'user', 'rating']
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    exclude = ['slug']

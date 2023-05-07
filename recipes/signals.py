@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
+
 import os
 import shutil
-from .models import Ingredient, RecipeIngredient, Recipe
+from .models import Ingredient, RecipeIngredient, Recipe, StarRating
 
 @receiver(post_save, sender=Ingredient)
 def update_recipes_after_changing_Ingredient(sender, instance, **kwargs):
@@ -13,6 +14,10 @@ def update_recipes_after_changing_Ingredient(sender, instance, **kwargs):
 @receiver(post_save, sender=RecipeIngredient)
 def update_recipe_after_changing_RecipeIngredient(sender, instance, **kwargs):
     instance.recipe.update_total_price()
+
+@receiver(post_save, sender=StarRating)
+def update_avg_rating_after_new_rate(sender, instance, **kwargs):
+    instance.recipe.average_rating()
 
 @receiver(pre_delete, sender=Recipe)
 def delete_related_folder(sender, instance, **kwargs):

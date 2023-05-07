@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <!-- Basic -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{% static 'recipes/images/favicon.png' %}" type="images/png">
+  <title>{{ category.name }} — Smachno!</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'recipes/css/category.css' %}" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="hero_area">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg custom_navbar">
+        <!-- Header brand   -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <span class="word">Smachno<span class="exclamation">!</span></span>
+        </a>
+
+        <!-- Toggle for open menu on mobile devices -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+        </button>
+
+        <!-- Menu options on navbar -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="btn nav-link" href="{% url 'home' %}">Головна</a>
+            </li>
+            <li class="nav-item active">
+              <div class="dropdown-center">
+                <a class="btn nav-link dropdown-toggle categories-menu" data-bs-toggle="dropdown" aria-expanded="false" href="#">Категорії</a>
+                <ul class="dropdown-menu">
+                  {% for category in categories %}
+                  <li><a class="dropdown-item" href="{% url 'category_recipes' category.slug %}">{{ category.name }}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="btn nav-link" href="{% url 'favorites_recipes' %}">Уподобані рецепти</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn nav-link" href="{% url 'edit_profile' user.id %}">Налаштування</a>
+            </li>
+            {% if user.is_superuser %}
+            <li class="nav-item">
+              <a class="btn nav-link" style="color: orangered" href="/admin">Адмінка</a>
+            </li>
+            {% endif %}
+            </ul>
+            <div class="user_option">
+              <a href="{% url 'signout' %}" class="signin">Вийти</a>
+            </div>
+          {% else %}
+          </ul>
+          <div class="user_option">
+            <a href="{% url 'signin' %}" class="signin">Увійти</a>
+          </div>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Body section -->
+  <div class="py-5 bg-light">
+    <div class="container">
+      <!-- Page title -->
+      <div class="heading_container heading_center">
+        <h1> {{ category.name }} </h1>
+      </div>
+      <br><br>
+
+      <div class="row-2">
+        <!-- Dropdown sorting menu -->
+        <div class="col d-flex justify-content-end">
+          <div class="dropdown-center">
+            <button class="btn dropdown-toggle text-black" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="filter-btn">
+              Сортувати за
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item sort-item" data-sort-by="worth-asc" href="#">Від дешевших</a></li>
+              <li><a class="dropdown-item sort-item" data-sort-by="rating-desc" href="#">За спаданням рейтингу</a></li>
+              <li><a class="dropdown-item sort-item" data-sort-by="new" href="#">Від нових до старих</a></li>
+              <li><a class="dropdown-item sort-item" data-sort-by="old" href="#">Від старих до нових</a></li>
+            </ul>
+          </div>
+        </div>
+        <br>
+      </div>
+
+      <div class="row">
+        <!-- Recipes list -->
+        <section class="col-md-12">
+          <div class="row recipe-container row-cols-xs-1 row-cols-md-4 row-cols-lg-5 g-4">
+            {% for recipe in category_recipes reversed %}
+            <div class="col recipe-item" data-id="{{ recipe.id }}" data-rating="{{ recipe.avg_rating }}"
+              data-worth="{{ recipe.total_price }}">
+              <div class="card shadow-sm">
+                <a href="{% url 'recipe_detail' recipe.slug %}">
+                  <img class="card-img-top" src="{{ recipe.preview.url }}">
+                </a>
+                <div class="card-body d-flex flex-column justify-content-between">
+                  <a href="{% url 'recipe_detail' recipe.slug %}" style="text-decoration: none; color:black;">
+                    <p class="card-text" style="margin-bottom: 10px;">{{ recipe.title }}</p>
+                  </a>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                      <i class="fa-solid fa-wallet" style="margin-right: 5px;" title="Вартість приготування"></i>{{ recipe.total_price }}₴
+                    </small>
+                    <small class="text-muted">
+                      <i class="fa-solid fa-star" style="margin-right: 5px; margin-left: 5px;" title="Оцінка"></i>{{ recipe.avg_rating }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <!-- Recipes section ends -->
+
+  <!-- Footer section starts -->
+  <footer class="footer_section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 footer-col">
+          <div class="footer_contact">
+            <h4> Контакти </h4>
+            <div class="contact_link_box">
+              <div>
+                <i class="fa-solid fa-location-dot"></i>
+                <span> ХНЕУ ім. С. Кузнеця </span>
+              </div>
+              <div>
+                <i class="fa-solid fa-phone"></i>
+                <span> +38 068 066 1042 </span>
+              </div>
+              <div>
+                <i class="fa-solid fa-envelope"></i>
+                <span> kimachenko.maksym.o@hneu.net </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 footer-col">
+          <div class="footer_detail">
+            <a href="{% url 'home' %}/" class="footer-logo"> <span class="word">Smachno<span class="exclamation">!</span></span></a>
+            <p> Смачні рецепти для Вас та Вашої родини. </p>
+            <div class="footer_social">
+              <a href="https://www.hneu.edu.ua/">
+                <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+              </a>
+              <a href="https://t.me/maxkimachenko">
+                <i class="fa-brands fa-telegram" aria-hidden="true"></i>
+              </a>
+              <a href="https://instagram.com/maxkimachenko">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 footer-col">
+          <h4> Швидкі посилання </h4>
+          <a href="#">
+            <p> Про нас </p>
+          </a>
+        </div>
+      </div>
+      <div class="footer-info">
+        <p> &copy; <span id="displayYear"></span></p>
+      </div>
+    </div>
+  </footer>
+  <!-- Footer section ends -->
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- jQery JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Shuffle JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Shuffle/6.1.0/shuffle.min.js" integrity="sha512-r8mIpk3ypCMwNxH6srRZGbjHQlOFt3Mq2vrZ/iymx6g9JUqTeVavofeX6gbrxAC74X5HmBy5gxyhCm6OiXrM0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Custom js -->
+  <script src="{% static 'recipes/js/category.js' %}"></script>
+</body>
+
+</html>

@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
+:root {
+    --main-color: #ff8635;
+}
+
 html {
     height: 100%
 }
@@ -487,6 +491,10 @@ input[type=text] {
     vertical-align: middle;
     margin-left: 10px
 }
+
+.logoclass .exclamation {
+    color: var(--main-color);
+  }
 
 .formtype {
     padding: 5px
