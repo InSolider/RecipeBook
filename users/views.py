@@ -1,12 +1,17 @@
+from django.conf import settings
 from django.db import transaction
 from django.contrib import messages
 from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+
+from .models import Profile
+from recipes.models import Recipe, Category
 from .forms import CustomRegistrationForm, EditProfileForm, EditUsernameForm, EditEmailForm, ChangePasswordForm
 
 def user_signin_signup(request):
@@ -16,6 +21,7 @@ def user_signin_signup(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.info(request, 'Ви успішно увійшли на сайт.')
             if request.POST.get('next') != '':
                 return redirect(request.POST.get('next'))
             else:
@@ -32,6 +38,7 @@ def user_signin_signup(request):
             password = form.cleaned_data['password1']
             newuser = authenticate(username = username, password = password)
             login(request, newuser)
+            messages.success(request, 'Ви успішно зареєструвалися на сайті!')
             return redirect('home')
         else:
             return render(request,'users/signin.html', {'form': form})
@@ -101,3 +108,13 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
         else:
             form = ChangePasswordForm(user=request.user)
         return render(request, 'users/change_password.html', {})
+
+# View for profile page
+
+class ProfileView(View):
+    def get(self, request, pk, *args, **kwargs):
+        user_info = get_user_model().objects.get(id=pk)
+        profile_info = Profile.objects.get(user_id=pk)
+        categories = Category.objects.all()
+        user_likes = Recipe.objects.filter(likes=user_info).count()
+        return render(request, 'users/profile.html', {'user_info': user_info, 'profile_info': profile_info, 'user_likes': user_likes, 'categories': categories})

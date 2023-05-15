@@ -5,8 +5,8 @@
 <head>
 	<!-- Basic -->
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, shrink-to-fit=no">
-	<link rel="shortcut icon" type="images/png" href="{% static 'users/img/favicon.png' %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" type="images/png" href="{% static 'users/images/favicon.webp' %}">
 	<title>Редагувати інформацію у профілі</title>
 
 	<!-- Bootstrap CSS -->
@@ -25,11 +25,11 @@
 			<!-- Site name and logo in sidebar -->
 			<div class="header-left">
 				<a href="{% url 'home' %}" class="logo nav-link">
-					<img src="{% static 'users/img/favicon.png' %}" width="40" height="40" alt="Logo">
+					<img src="{% static 'users/images/favicon.webp' %}" width="40" height="40" alt="Logo">
 					<span class="logoclass">Smachno<span class="exclamation">!</span></span>
 				</a>
 				<a href="{% url 'home' %}" class="logo logo-small">
-					<img src="{% static 'users/img/favicon.png' %}" width="30" height="30" alt="Logo">
+					<img src="{% static 'users/images/favicon.webp' %}" width="30" height="30" alt="Logo">
 				</a>
 			</div>
 
@@ -45,23 +45,18 @@
 			<ul class="nav user-menu">
 				<li class="nav-item dropdown has-arrow">
 					<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false"><span class="user-img">
-						<img src="{% static 'users/img/no_user_img.jpeg' %}" class="rounded-circle" width="35" alt="User Image">
+						<img src="{% static 'users/images/no_user_img.webp' %}" class="rounded-circle" width="35" alt="User Image">
 					</span></a>
 					<div class="dropdown-menu">
 						<div class="user-header">
 							<div class="avatar avatar-sm">
-								<img src="{% static 'users/img/no_user_img.jpeg' %}" class="avatar-img rounded-circle" alt="User Image">
+								<img src="{% static 'users/images/no_user_img.webp' %}" class="avatar-img rounded-circle" alt="User Image">
 							</div>
-							<div class="user-text">
+							<div class="user-text d-flex align-items-center">
 								<h6>{{ user.username }}</h6>
-								{% if user.is_superuser %}
-									<p class="text-muted mb-0">Адміністратор</p>
-								{% else %}
-									<p class="text-muted mb-0">Користувач</p>
-								{% endif %}
-							</div>
+							</div> 
 						</div>
-						<a class="dropdown-item" href="#">Мій профіль</a>
+						<a class="dropdown-item" href="{% url 'profile' user.id %}">Мій профіль</a>
 						<a class="dropdown-item" href="{% url 'edit_profile' user.id %}">Налаштування</a>
 						<a class="dropdown-item" href="{% url 'signout' %}">Вийти</a>
 					</div>
@@ -176,11 +171,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 	<!-- jQuery JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-	<!-- Moment JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" integrity="sha512-+H4iLjY3JsKiF2V6N366in5IQHj2uEsGV7Pp/GRcm0fn76aPAk5V8xB6n8fQhhSonTqTXs/klFz4D0GIn6Br9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	
 	<!-- Custom JS -->
 	<script src="{% static 'users/js/user_settings_pages.js' %}"></script>
 </body>

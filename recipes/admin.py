@@ -9,8 +9,7 @@ class RecipeIngredientInline(admin.TabularInline):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ['name', 'amount', 'unit', 'price', 'modified', 'modified_by']
-    readonly_fields = ['modified_by']
+    list_display = ['name', 'amount', 'unit', 'price', 'modified']
 
     def save_model(self, request, obj, form, change):
         obj.modified_by = request.user
@@ -19,8 +18,8 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
-    list_display = ['title', 'created_by', 'created', 'modified_by', 'modified', 'total_price', 'avg_rating']
-    readonly_fields = ['avg_rating', 'total_price', 'folder_path', 'modified_by', 'created_by', 'likes']
+    list_display = ['title', 'created', 'modified', 'total_price', 'avg_rating']
+    readonly_fields = ['total_price','avg_rating', 'folder_path', 'likes']
     exclude = ['slug']
 
     def save_model(self, request, obj, form, change):

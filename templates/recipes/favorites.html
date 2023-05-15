@@ -6,7 +6,7 @@
   <!-- Basic -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="{% static 'recipes/images/favicon.png' %}" type="images/png">
+  <link rel="shortcut icon" href="{% static 'recipes/images/favicon.webp' %}" type="images/webp">
   <title>Уподобані рецепти — Smachno!</title>
 
   <!-- Bootstrap CSS -->
@@ -56,17 +56,35 @@
             <li class="nav-item active">
               <a class="btn nav-link" href="{% url 'favorites_recipes' %}">Уподобані рецепти</a>
             </li>
-            <li class="nav-item">
-              <a class="btn nav-link" href="{% url 'edit_profile' user.id %}">Налаштування</a>
-            </li>
             {% if user.is_superuser %}
             <li class="nav-item">
               <a class="btn nav-link" style="color: orangered" href="/admin">Адмінка</a>
             </li>
             {% endif %}
             </ul>
-            <div class="user_option">
-              <a href="{% url 'signout' %}" class="signin">Вийти</a>
+            <div class="d-flex justify-content-center">
+              <div class="dropdown user-menu text-center">
+                <a href="#" class="nav-link" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="user-img">
+                    <img src="{% static 'users/images/no_user_img.webp' %}" class="rounded-circle" width="40" alt="User Image">
+                  </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 0; transform: translateX(-50%); left: 50%;" aria-labelledby="userDropdown">
+                  <li>
+                    <div class="user-header">
+                      <div class="avatar avatar-sm">
+                        <img src="{% static 'users/images/no_user_img.webp' %}" class="avatar-img rounded-circle" alt="User Image">
+                      </div>
+                      <div class="user-text d-flex align-items-center">
+                        <h6>{{ user.username }}</h6>
+                      </div>                    
+                    </div>
+                  </li>
+                  <li><a class="dropdown-item" href="{% url 'profile' user.id %}">Мій профіль</a></li>
+                  <li><a class="dropdown-item" href="{% url 'edit_profile' user.id %}">Налаштування</a></li>
+                  <li><a class="dropdown-item" href="{% url 'signout' %}">Вийти</a></li>
+                </ul>
+              </div>
             </div>
           {% else %}
           </ul>
@@ -137,7 +155,7 @@
           </div>
           {% else %}
           <div class="align-items-center text-center" style="height: 100%;">
-            <h1>Ви ще не додали жодного реуепту до цього списку.</h1>
+            <h1>Ви ще не додали жодного рецепту до цього списку.</h1>
           </div>
           {% endif %}
         </section>
@@ -204,7 +222,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- jQery JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Shuffle JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Shuffle/6.1.0/shuffle.min.js" integrity="sha512-r8mIpk3ypCMwNxH6srRZGbjHQlOFt3Mq2vrZ/iymx6g9JUqTeVavofeX6gbrxAC74X5HmBy5gxyhCm6OiXrM0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

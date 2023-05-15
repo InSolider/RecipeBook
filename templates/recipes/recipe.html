@@ -7,7 +7,7 @@
     <!-- Basic -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{% static 'recipes/images/favicon.png' %}" type="images/png">
+    <link rel="shortcut icon" href="{% static 'recipes/images/favicon.webp' %}" type="images/webp">
     <title>{{ recipe.title }} — Smachno!</title>
 
     <!-- Bootstrap CSS -->
@@ -55,17 +55,35 @@
                       <li class="nav-item">
                         <a class="btn nav-link" href="{% url 'favorites_recipes' %}">Уподобані рецепти</a>
                       </li>
-                      <li class="nav-item">
-                        <a class="btn nav-link" href="{% url 'edit_profile' user.id %}">Налаштування</a>
-                      </li>
                       {% if user.is_superuser %}
                       <li class="nav-item">
                         <a class="btn nav-link" style="color: orangered" href="/admin">Адмінка</a>
                       </li>
                       {% endif %}
                       </ul>
-                      <div class="user_option">
-                        <a href="{% url 'signout' %}" class="signin">Вийти</a>
+                      <div class="d-flex justify-content-center">
+                        <div class="dropdown user-menu text-center">
+                          <a href="#" class="nav-link" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="user-img">
+                              <img src="{% static 'users/images/no_user_img.webp' %}" class="rounded-circle" width="40" alt="User Image">
+                            </span>
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 0; transform: translateX(-50%); left: 50%;" aria-labelledby="userDropdown">
+                            <li>
+                              <div class="user-header">
+                                <div class="avatar avatar-sm">
+                                  <img src="{% static 'users/images/no_user_img.webp' %}" class="avatar-img rounded-circle" alt="User Image">
+                                </div>
+                                <div class="user-text d-flex align-items-center">
+                                  <h6>{{ user.username }}</h6>
+                                </div>                    
+                              </div>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'profile' user.id %}">Мій профіль</a></li>
+                            <li><a class="dropdown-item" href="{% url 'edit_profile' user.id %}">Налаштування</a></li>
+                            <li><a class="dropdown-item" href="{% url 'signout' %}">Вийти</a></li>
+                          </ul>
+                        </div>
                       </div>
                     {% else %}
                     </ul>
@@ -83,7 +101,7 @@
         <div class="preview-text container">
             <h2 class="preview-title" style="padding-bottom: 10px;">{{ recipe.title }}</h2>
             <span class="preview-subtitle" style="padding-right: 10px; padding-left: 10px;" title="Час приготування"><i class="fa-solid fa-clock" style="padding-right: 5px;"></i>{{ recipe.cooking_time }}</span>
-            <span class="preview-subtitle" style="padding-right: 10px;" title="Кількість порцій"><i class="fa-solid fa-pizza-slice" style="padding-right: 5px;"></i>{{ recipe.portions }}</span>
+            <span class="preview-subtitle" style="padding-right: 10px;" title="Кількість порцій"><i class="fa-solid fa-utensils" style="padding-right: 5px;"></i>{{ recipe.portions }}</span>
             <span class="preview-subtitle" style="padding-right: 10px;" title="Кількість уподобпнь"><i class="fa-solid fa-heart" style="padding-right: 5px;"></i>{{ recipe.likes.count }}</span>
         </div>
     </section>
@@ -218,10 +236,10 @@
                 <div class="border p-2">
                     <div class="row">
                         <div class="col-md-auto">
-                            <img src="{% static 'recipes/images/no_user_img.jpeg' %}" width="50" height="50" class="rounded">
+                            <img src="{% static 'recipes/images/no_user_img.webp' %}" width="50" height="50" class="rounded">
                         </div>
                         <div class="col-md-auto">
-                            <h2 class="text-capitalize h5 mb-0">{{ comment.сommented_by }}</h2>
+                            <a href="{% url 'profile' comment.сommented_by.id %}"><h2 class="text-capitalize h5 mb-0">{{ comment.сommented_by }}</h2></a>
                             <p class="small text-secondary m-0 mt-1">{{ comment.created_on }}</p>
                         </div>
                     </div>
@@ -291,7 +309,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js" integrity="sha512-i9cEfJwUwViEPFKdC1enz4ZRGBj8YQo6QByFTF92YXHi7waCqyexvRD75S5NVTsSiTv7rKWqG9Y5eFxmRsOn0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- jQery JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Custom JS -->
     <script src="{% static 'recipes/js/recipe.js' %}"></script>

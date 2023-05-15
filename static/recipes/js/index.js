@@ -83,3 +83,9 @@ $(document).ready(function () {
     $('.btn-show-all').text('Показати всі інгредієнти');
   });
 });
+
+// Toast notifications
+var toastElements = document.querySelectorAll('.toast');
+for (var i = 0; i < toastElements.length; i++) {
+  new bootstrap.Toast(toastElements[i]).show();
+}

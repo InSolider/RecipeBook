@@ -50,9 +50,7 @@ class Recipe(models.Model):
     description = CKEditor5Field('Детальний рецепт', config_name='extends')
     cooking_time = models.CharField('Час приготування', max_length=30)
     portions = models.IntegerField('Кількість порцій')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Автор', related_name='recipe_created_by', null=True, on_delete=models.SET_NULL)
     created = models.DateTimeField('Дата публікації', auto_now_add=True)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', related_name='recipe_modified_by', null=True, on_delete=models.SET_NULL)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Уподобали', related_name='like_recipe')
     total_price = models.DecimalField('Вартість', max_digits=6, decimal_places=2, null=True)
@@ -89,8 +87,7 @@ class Ingredient(models.Model):
     )
     price = models.DecimalField('Ціна', max_digits=6, decimal_places=2)
     modified = models.DateTimeField('Дата редагування', auto_now=True)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Відредагував', null=True, on_delete=models.SET_NULL)
-
+    
     def __str__(self):
         return f'{self.name}'
     
