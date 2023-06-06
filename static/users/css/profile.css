@@ -17,6 +17,21 @@ body {
 }
 
 /* Header section starts */
+.user_option .signin {
+  display: inline-block;
+  padding: 8px 30px;
+  background-color: var(--main-color);
+  color: #ffffff;
+  border-radius: 45px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  border: none;
+}
+
+.user_option .signin:hover {
+  background-color: var(--main-color-shadow);
+}
+
 .dropdown-toggle:focus {
   background-color: white;
   color: black;
@@ -133,7 +148,7 @@ body {
 }
 
 .dropdown-item:active {
-  background-color: var(--main-color-shadow)
+  background-color: #b9b9b9;
 }
 
 .dropdown-menu {
@@ -196,7 +211,7 @@ body {
 }
 
 .user-menu .dropdown-menu .dropdown-item:hover {
-  color: var(--main-color-shadow)
+  color: var(--main-color-shadow);
 }
 
 .user-header {

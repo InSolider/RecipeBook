@@ -93,8 +93,8 @@ class Ingredient(models.Model):
     
     class Meta:
         db_table = 'Ingredients'
-        verbose_name = 'Інгрідієнт'
-        verbose_name_plural = 'Інгрідієнти'
+        verbose_name = 'Інгредієнт'
+        verbose_name_plural = 'Інгредієнти'
 
 # Database model for ingredients in recipes
 class RecipeIngredient(models.Model):

@@ -3,6 +3,7 @@
 
 :root {
     --main-color: #ff8635;
+    --main-color-shadow: #EC5800;
 }
 
 html {
@@ -166,7 +167,7 @@ input[type=text] {
 }
 
 .dropdown-item:active {
-    background-color: #ff9829
+    background-color: #b9b9b9;
 }
 
 .dropdown-menu {
@@ -298,7 +299,7 @@ input[type=text] {
 }
 
 .user-menu .dropdown-menu .dropdown-item:hover {
-    color: #dd6400
+    color: var(--main-color-shadow);
 }
 
 .mobile_btn {

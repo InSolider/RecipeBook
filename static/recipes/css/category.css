@@ -169,7 +169,7 @@ body {
 }
 
 .dropdown-item:active {
-  background-color: var(--main-color-shadow)
+  background-color: #b9b9b9;
 }
 
 .dropdown-menu {

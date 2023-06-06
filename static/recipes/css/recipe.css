@@ -82,7 +82,7 @@ header.shadow {
 .user_option .signin {
   display: inline-block;
   padding: 8px 30px;
-  background-color: #ffbe33;
+  background-color: var(--main-color);
   color: #ffffff;
   border-radius: 45px;
   -webkit-transition: all 0.3s;
@@ -91,7 +91,7 @@ header.shadow {
 }
 
 .user_option .signin:hover {
-  background-color: #e69c00;
+  background-color: var(--main-color-shadow);
 }
 
 .navbar-toggler {
@@ -182,7 +182,7 @@ header.shadow {
 }
 
 .dropdown-item:active {
-  background-color: var(--main-color-shadow)
+  background-color: #b9b9b9;
 }
 
 .dropdown-menu {

@@ -37,8 +37,8 @@ class EditProfileForm(forms.ModelForm):
     ]
     
     gender = forms.ChoiceField(label='Стать', choices=gender_choices, widget=forms.Select(attrs={'class': 'form-control'}))
-    birth_date = forms.DateField(label='День народження', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date', 'class': 'form-control'}))
-    bio = forms.CharField(label='Розкажіть щось про себе', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '5'}))
+    birth_date = forms.DateField(required=False, label='День народження', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date', 'class': 'form-control'}))
+    bio = forms.CharField(required=False, label='Розкажіть щось про себе', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '5'}))
 
     class Meta:
         model = Profile
@@ -52,7 +52,7 @@ class EditUsernameForm(forms.ModelForm):
         fields = ('username', )
 
 class EditEmailForm(forms.ModelForm):
-    first_name = forms.CharField(label='Ім\'я', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(required=False, label='Ім\'я', widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='Електронна пошта', widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'name@example.com'}))
 
     class Meta:
